@@ -40,6 +40,25 @@ router.get('/', async (req, res) => {
   }
 })
 
+router.post('/', async (req, res) => {
+  try {
+    const data = req.body
+    const db = req.db
+
+    data.createdAt = new Date().toISOString()
+    data.updatedAt = new Date().toISOString()
+
+    const { insertedId } = await db.collection('clients').insertOne(data)
+    const client = await db
+      .collection('clients')
+      .findOne({ _id: ObjectId(insertedId) })
+
+    res.send(client)
+  } catch (error) {
+    console.log(error)
+  }
+})
+
 app.listen(port, () => {
   console.log(`Listening on http://localhost:${port}`)
 })
