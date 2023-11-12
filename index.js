@@ -59,6 +59,33 @@ router.post('/', async (req, res) => {
   }
 })
 
+router.patch('/:id', async (req, res) => {
+  try {
+    const { name, lastName, surname, contacts } = req.body
+    const db = req.db
+
+    await db.collection('clients').updateOne(
+      { _id: ObjectId(req.params.id) },
+      {
+        $set: {
+          name,
+          surname,
+          lastName,
+          contacts,
+          updatedAt: new Date().toISOString(),
+        },
+      }
+    )
+
+    const client = await db
+      .collection('clients')
+      .findOne({ _id: ObjectId(req.params.id) })
+    res.send(client)
+  } catch (error) {
+    console.log(error)
+  }
+})
+
 app.listen(port, () => {
   console.log(`Listening on http://localhost:${port}`)
 })
