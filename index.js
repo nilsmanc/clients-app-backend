@@ -89,3 +89,17 @@ router.patch('/:id', async (req, res) => {
 app.listen(port, () => {
   console.log(`Listening on http://localhost:${port}`)
 })
+
+router.delete('/:id', async (req, send) => {
+  try {
+    const db = req.db
+
+    db.collection('clients').deleteOne({ _id: ObjectId(req.params.id) })
+  } catch (error) {
+    console.log(error)
+  }
+})
+
+app.listen(port, () => {
+  console.log(` Listening on http://localhost:${port}`)
+})
