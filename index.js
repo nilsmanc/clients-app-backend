@@ -31,8 +31,23 @@ const port = process.env.PORT || 3000
 router.get('/', async (req, res) => {
   try {
     const db = req.db
-
     const clients = await db.collection('clients').find().toArray()
+
+    if (req.query.search) {
+      const search = req.query.search.trim().toLowerCase()
+
+      const clientsList = clients.filter((client) =>
+        [
+          client.name,
+          client.surname,
+          client.lastName,
+          ...client.contacts.map(({ value }) => value),
+        ].some((str) => str.toLowerCase().includes(search))
+      )
+
+      res.send(clientsList)
+      return
+    }
 
     res.send(clients)
   } catch (error) {
