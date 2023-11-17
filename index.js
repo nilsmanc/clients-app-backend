@@ -1,12 +1,14 @@
 require('dotenv').config()
 const express = require('express')
 const cors = require('cors')
+const bodyParser = require('body-parser')
 const { MongoClient, ObjectId } = require('mongodb')
 
 const router = express.Router()
 const app = express()
 
 app.use(express.json())
+app.use(express.urlencoded({ extended: true }))
 app.use(cors())
 app.use('/api/clients', router)
 
@@ -18,7 +20,7 @@ const clientPromise = MongoClient.connect(process.env.DB_URL, {
 router.use(async (req, res, next) => {
   try {
     const client = await clientPromise
-    req.db = client.db('clients_db')
+    req.db = client.db('Clients_db')
 
     next()
   } catch (error) {
@@ -99,10 +101,6 @@ router.patch('/:id', async (req, res) => {
   } catch (error) {
     console.log(error)
   }
-})
-
-app.listen(port, () => {
-  console.log(`Listening on http://localhost:${port}`)
 })
 
 router.delete('/:id', async (req, send) => {
